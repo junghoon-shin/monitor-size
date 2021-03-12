@@ -13,9 +13,9 @@ get_size = function(diagnoal, horizontal, vertical) {
   c(width = horizontal * m, height = vertical * m)
 }
 
-d = c(49, 43, 34, 32, 27)
-h = c(32, 16, 21, 16, 16)
-v = c(9, 9, 9, 9, 9)
+d = c(49, 43, 38, 34, 32, 27)
+h = c(32, 16, 21, 21, 16, 16)
+v = c(9, 9, 9, 9, 9, 9)
 
 sizetbl = pmap_dfr(list(d, h, v), ~{
   size = get_size(..1, ..2, ..3)
@@ -26,11 +26,11 @@ maxdim = max(sizetbl$width, sizetbl$height) + 1
 
 sizetbl %<>% mutate(width = width / maxdim, height = height / maxdim)
 
-base_asp = 0.2/max(sizetbl$height)
+base_asp = 1 / length(d) / max(sizetbl$height)
 
 sizetbl %<>% mutate(height = height * base_asp)
 
-g = gList(rectGrob(y = unit(5:1/5 - 0.1, "npc"), width = sizetbl$width, height = sizetbl$height, gp = gpar(fill = "#41b6c4", col = "black")),
-          textGrob(str_c(d, "''", " (", h, ":", v, ")"), y = unit(5:1/5 - 0.1, "npc"), gp = gpar(fontsize = 10)))
+g = gList(rectGrob(y = unit(length(d):1 / length(d) - 1 / (length(d) * 2), "npc"), width = sizetbl$width, height = sizetbl$height, gp = gpar(fill = "#41b6c4", col = "black")),
+          textGrob(str_c(d, "''", " (", h, ":", v, ")"), y = unit(length(d):1 / length(d) - 1 / (length(d) * 2), "npc"), gp = gpar(fontsize = 10)))
 
 save_plot("monitor_size.tiff", as_ggplot(g), base_asp = base_asp)
